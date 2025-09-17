@@ -1,0 +1,142 @@
+# Default configuration for Audiobook Converter
+# This file is automatically created if it doesn't exist
+
+directories:
+  input: /input
+  output: /output
+  temp: /temp
+
+conversion:
+  # Audio settings optimized for audiobooks
+  audio_bitrate: '64k'              # Optimal bitrate for speech content
+  audio_codec: 'libfdk_aac'         # Premium AAC encoder for best quality
+  max_chapter_length: 900           # Maximum chapter length in seconds (15 minutes)
+  jobs: 4                           # Number of CPU cores to use (adjust for your system)
+  quality_profile: 'high'           # Quality profile: high, medium, low
+  
+  # FFmpeg 7.1.2 specific options
+  ffmpeg_options:
+    afterburner: true               # Enhanced quality mode
+    cutoff: 20000                   # Maximum frequency in Hz (20kHz)
+    movflags: '+faststart'          # Optimize for streaming
+    profile: 'aac_he_v2'            # AAC profile for high efficiency
+
+beets:
+  # Metadata processing with Audible integration
+  enable_audible: true              # Enable Audible API for metadata
+  auto_tag: true                    # Automatically tag files
+  tag_before_conversion: true       # IMPORTANT: Tag individual MP3s before M4B conversion
+  fetch_art: true                   # Download and embed cover art
+  
+  # Audible plugin specific settings
+  audible:
+    source_weight: 0.8              # Weight of Audible metadata vs existing tags
+    timeout: 30                     # API timeout in seconds
+    countries: ['US', 'GB', 'DE']   # Preferred Audible markets
+    
+  # Import settings
+  import:
+    autotag: true                   # Automatically identify and tag
+    copy: false                     # Don't copy files, tag in place
+    move: false                     # Don't move files, tag in place
+    write: true                     # Write tags to files
+    quiet_fallback: 'skip'          # Skip files that can't be tagged
+
+output_structure:
+  # Output organization
+  pattern: 'author/book/file'       # Pattern: author/book/file.m4b
+  sanitize_names: true              # Remove problematic characters from filenames
+  max_filename_length: 200          # Maximum filename length
+  
+  # Author name replacements for common issues
+  author_replacements:
+    'Various Artists': 'Various Authors'
+    'Unknown': 'Unknown Author'
+    '': 'Unknown Author'
+
+# Performance settings
+performance:
+  parallel_books: 1                 # Number of books to process simultaneously
+  use_tmpfs: false                  # Use RAM disk for temporary files (requires tmpfs mount)
+  cleanup_immediately: true         # Clean up temp files immediately after conversion
+  
+  # Memory management
+  max_memory_per_job: '1G'          # Maximum memory per conversion job
+  temp_cleanup_interval: 3600       # Clean temp directory every hour
+
+# Logging configuration
+logging:
+  level: 'INFO'                     # Log level: DEBUG, INFO, WARNING, ERROR
+  file: '/logs/converter.log'       # Log file path
+  max_size: '50MB'                  # Maximum log file size
+  backup_count: 5                   # Number of backup log files to keep
+  
+  # Component-specific logging
+  ffmpeg_verbose: false             # Log detailed FFmpeg output
+  beets_verbose: false              # Log detailed Beets output
+  watchdog_verbose: false           # Log file system events
+
+# File monitoring
+monitoring:
+  watch_recursive: true             # Watch subdirectories
+  ignore_hidden: true               # Ignore hidden files and directories
+  ignore_patterns:                  # Patterns to ignore
+    - '*.tmp'
+    - '*.part'
+    - '.DS_Store'
+    - 'Thumbs.db'
+  
+  # Processing delays
+  settle_time: 10                   # Seconds to wait after file creation before processing
+  retry_attempts: 3                 # Number of retry attempts for failed conversions
+  retry_delay: 300                  # Seconds to wait between retry attempts
+
+# Quality profiles
+quality_profiles:
+  low:
+    audio_bitrate: '48k'
+    cutoff: 12000
+    afterburner: false
+    
+  medium:
+    audio_bitrate: '56k'
+    cutoff: 15000
+    afterburner: false
+    
+  high:
+    audio_bitrate: '64k'
+    cutoff: 20000
+    afterburner: true
+
+# Notification settings (optional)
+notifications:
+  enabled: false                    # Enable notifications
+  
+  # Discord webhook (optional)
+  discord:
+    enabled: false
+    webhook_url: ''
+    
+  # Email notifications (optional)
+  email:
+    enabled: false
+    smtp_server: ''
+    smtp_port: 587
+    username: ''
+    password: ''
+    from_address: ''
+    to_address: ''
+
+# Advanced settings
+advanced:
+  # Container health check settings
+  health_check_interval: 30         # Health check interval in seconds
+  
+  # API settings
+  api_enabled: true                 # Enable REST API on port 8080
+  api_host: '0.0.0.0'              # API host (0.0.0.0 for all interfaces)
+  api_port: 8080                   # API port
+  
+  # Debug settings
+  debug_mode: false                 # Enable debug mode
+  preserve_temp_files: false        # Keep temporary files for debugging

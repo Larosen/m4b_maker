@@ -1,0 +1,133 @@
+<?xml version="1.0"?>
+<Container version="2">
+  <Name>audiobook-converter-ffmpeg712</Name>
+  <Repository>audiobook-converter:latest</Repository>
+  <Registry>https://hub.docker.com/</Registry>
+  <Network>bridge</Network>
+  <MyIP/>
+  <Shell>bash</Shell>
+  <Privileged>false</Privileged>
+  <Support>https://github.com/audiobook-converter/issues</Support>
+  <Project>https://github.com/audiobook-converter</Project>
+  <Overview>
+    Modern audiobook converter with FFmpeg 7.1.2 and beets-audible integration. 
+    Converts MP3 audiobooks to M4B with proper metadata and organizes them in Author/Book/File.m4b structure.
+    
+    Key Features:
+    - FFmpeg 7.1.2 with libfdk_aac for premium audio quality
+    - Beets-audible integration for automatic metadata tagging BEFORE M4B conversion  
+    - Supports both flat (Book/) and structured (Author/Book/) input
+    - Real-time folder monitoring with automatic processing
+    - Hardware-accelerated conversion optimized for Intel processors
+    - Comprehensive health checks and detailed logging
+    - Web interface for status monitoring
+    
+    Workflow: Input MP3s → Beets Tagging → FFmpeg M4B Conversion → Structured Output
+    
+    Optimized for Unraid servers with modern Intel processors.
+  </Overview>
+  <Category>MediaApp:Other</Category>
+  <WebUI>http://[IP]:[PORT:8080]</WebUI>
+  <TemplateURL>https://raw.githubusercontent.com/audiobook-converter/unraid-templates/main/audiobook-converter-ffmpeg712.xml</TemplateURL>
+  <Icon>https://raw.githubusercontent.com/audiobook-converter/unraid-templates/main/icons/audiobook-converter.png</Icon>
+  <ExtraParams>--restart=unless-stopped</ExtraParams>
+  <PostArgs/>
+  <CPUset/>
+  <DateInstalled/>
+  <DonateText>If you appreciate this container, consider supporting the development</DonateText>
+  <DonateLink>https://github.com/sponsors/audiobook-converter</DonateLink>
+  <Description>
+    Modern audiobook converter with FFmpeg 7.1.2 and beets-audible integration. 
+    Converts MP3 audiobooks to M4B with proper metadata and organizes them in Author/Book/File.m4b structure.
+    
+    Key Features:
+    - FFmpeg 7.1.2 with libfdk_aac for premium audio quality
+    - Beets-audible integration for automatic metadata tagging BEFORE M4B conversion  
+    - Supports both flat (Book/) and structured (Author/Book/) input
+    - Real-time folder monitoring with automatic processing
+    - Hardware-accelerated conversion optimized for Intel processors
+    - Comprehensive health checks and detailed logging
+    - Web interface for status monitoring
+    
+    Workflow: Input MP3s → Beets Tagging → FFmpeg M4B Conversion → Structured Output
+    
+    Optimized for Unraid servers with modern Intel processors.
+  </Description>
+  <Networking>
+    <Mode>bridge</Mode>
+    <Publish>
+      <Port>
+        <HostPort>8080</HostPort>
+        <ContainerPort>8080</ContainerPort>
+        <Protocol>tcp</Protocol>
+      </Port>
+    </Publish>
+  </Networking>
+  <Data>
+    <Volume>
+      <HostDir>/mnt/user/docker/audiobook-converter/config</HostDir>
+      <ContainerDir>/config</ContainerDir>
+      <Mode>rw</Mode>
+    </Volume>
+    <Volume>
+      <HostDir>/mnt/user/audiobooks/input</HostDir>
+      <ContainerDir>/input</ContainerDir>
+      <Mode>rw</Mode>
+    </Volume>
+    <Volume>
+      <HostDir>/mnt/user/audiobooks/output</HostDir>
+      <ContainerDir>/output</ContainerDir>
+      <Mode>rw</Mode>
+    </Volume>
+    <Volume>
+      <HostDir>/mnt/user/docker/audiobook-converter/logs</HostDir>
+      <ContainerDir>/logs</ContainerDir>
+      <Mode>rw</Mode>
+    </Volume>
+  </Data>
+  <Environment>
+    <Variable>
+      <Value>99</Value>
+      <Name>PUID</Name>
+      <Mode/>
+    </Variable>
+    <Variable>
+      <Value>100</Value>
+      <Name>PGID</Name>
+      <Mode/>
+    </Variable>
+    <Variable>
+      <Value>Europe/Berlin</Value>
+      <Name>TZ</Name>
+      <Mode/>
+    </Variable>
+    <Variable>
+      <Value>002</Value>
+      <Name>UMASK</Name>
+      <Mode/>
+    </Variable>
+  </Environment>
+  <Labels/>
+  
+  <!-- Port Configuration -->
+  <Config Name="WebUI Port" Target="8080" Default="8080" Mode="tcp" Description="Port for status web interface and API" Type="Port" Display="always" Required="false" Mask="false">8080</Config>
+  
+  <!-- Volume Configurations -->
+  <Config Name="Configuration Directory" Target="/config" Default="/mnt/user/docker/audiobook-converter/config" Mode="rw" Description="Container configuration files and settings. Contains converter.yaml for customization." Type="Path" Display="always" Required="true" Mask="false">/mnt/user/docker/audiobook-converter/config</Config>
+  
+  <Config Name="Input Directory" Target="/input" Default="/mnt/user/audiobooks/input" Mode="rw" Description="Input folder for MP3 audiobooks. Supports flat structure (Book/) or Author/Book/ structure. Place each audiobook in its own folder." Type="Path" Display="always" Required="true" Mask="false">/mnt/user/audiobooks/input</Config>
+  
+  <Config Name="Output Directory" Target="/output" Default="/mnt/user/audiobooks/output" Mode="rw" Description="Output folder for processed M4B files. Organized as Author/Book/Book.m4b structure for easy browsing." Type="Path" Display="always" Required="true" Mask="false">/mnt/user/audiobooks/output</Config>
+  
+  <Config Name="Log Directory" Target="/logs" Default="/mnt/user/docker/audiobook-converter/logs" Mode="rw" Description="Log files and debugging output. Monitor conversion progress and troubleshoot issues." Type="Path" Display="always" Required="true" Mask="false">/mnt/user/docker/audiobook-converter/logs</Config>
+  
+  <!-- Environment Variables -->
+  <Config Name="User ID (PUID)" Target="PUID" Default="99" Mode="" Description="User ID for file permissions. Use 99 for nobody user or your specific user ID." Type="Variable" Display="advanced" Required="false" Mask="false">99</Config>
+  
+  <Config Name="Group ID (PGID)" Target="PGID" Default="100" Mode="" Description="Group ID for file permissions. Use 100 for users group or your specific group ID." Type="Variable" Display="advanced" Required="false" Mask="false">100</Config>
+  
+  <Config Name="Timezone" Target="TZ" Default="Europe/Berlin" Mode="" Description="Container timezone (e.g., Europe/Berlin, America/New_York, UTC). Affects log timestamps and scheduling." Type="Variable" Display="advanced" Required="false" Mask="false">Europe/Berlin</Config>
+  
+  <Config Name="File Creation Mask (UMASK)" Target="UMASK" Default="002" Mode="" Description="File creation permissions mask. 002 creates files with rwxrwxr-x permissions." Type="Variable" Display="advanced" Required="false" Mask="false">002</Config>
+  
+</Container>

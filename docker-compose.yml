@@ -1,0 +1,69 @@
+version: '3.8'
+
+services:
+  audiobook-converter:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    container_name: audiobook-converter-ffmpeg712
+    restart: unless-stopped
+    
+    environment:
+      - PUID=99
+      - PGID=100
+      - TZ=Europe/Berlin
+      - UMASK=002
+    
+    volumes:
+      # Configuration
+      - /mnt/user/docker/audiobook-converter/config:/config
+      
+      # Input: MP3 audiobooks (supports both flat Book/ and Author/Book/ structure)
+      - /mnt/user/audiobooks/input:/input
+      
+      # Output: Processed M4B files in Author/Book/Book.m4b structure
+      - /mnt/user/audiobooks/output:/output
+      
+      # Logs and debugging
+      - /mnt/user/docker/audiobook-converter/logs:/logs
+      
+      # Optional: Temp directory on SSD for better performance
+      # - /mnt/cache/audiobook-temp:/temp
+    
+    ports:
+      - "8080:8080"
+    
+    # Resource limits optimized for modern Intel processors
+    deploy:
+      resources:
+        limits:
+          cpus: '8.0'      # Adjust based on your CPU cores
+          memory: 4G       # Sufficient for multiple parallel conversions
+        reservations:
+          cpus: '2.0'      # Minimum guaranteed cores
+          memory: 1G       # Minimum guaranteed memory
+    
+    # Health check using built-in script
+    healthcheck:
+      test: ["CMD", "python3", "/app/healthcheck.py"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    
+    # Logging configuration
+    logging:
+      driver: json-file
+      options:
+        max-size: "50m"
+        max-file: "3"
+    
+    networks:
+      - audiobook-net
+
+networks:
+  audiobook-net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
